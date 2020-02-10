@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bash-sleep
+  labels:
+    role: bash-sleep
+    {{- include "example.common_labels" . | indent 4 }}
+spec:
+  selector:
+    role: bash-sleep
+    {{- include "example.common_labels" . | indent 4 }}
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  - name: stats
+    port: 1024
+    protocol: TCP
+    targetPort: 1024

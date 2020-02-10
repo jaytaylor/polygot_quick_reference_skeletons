@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bash-sleep
+  labels:
+    role: bash-sleep
+    {{- include "example.common_labels" . | indent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: bash-sleep
+      {{- include "example.common_labels" . | indent 6 }}
+  template:
+    metadata:
+      labels:
+        role: bash-sleep
+        {{- include "example.common_labels" . | indent 8 }}
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  # n.b. Prefer to co-locate with other -like kinded deployments.
+                  role: bash-sleep
+                  {{- include "example.common_labels" . | indent 18 }}
+      containers:
+      - name: bash-sleep
+        image: ubuntu:18.04
+        command:
+        - "/bin/bash"
+        - "-c"
+        - |
+          sleep inf
+        imagePullPolicy: {{ .Values.imagePullPolicy | default "Always" }}
+        env:
+        - name: FOO
+          value: {{ required "example.foo is required" .Values.example.foo | quote }}
+      resources:
+{{ toYaml .Values.example.resources | indent 8 }}

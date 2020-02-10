@@ -1,0 +1,4 @@
+apiVersion: v1
+name: jays-example
+description: Basic bare-bones Helm Chart for installation to a Kubernetes cluster.
+version: 0.0.1
